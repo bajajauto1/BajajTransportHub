@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-active {
+            border-bottom: 3px solid #2563eb;
+            color: #2563eb;
+        }
+    </style>
+</head>
+<body class="pb-10">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">Transport<span class="text-blue-600">Hub</span></h1>
+            <div class="flex bg-gray-100 p-1 rounded-lg">
+                <button id="userBtn" onclick="switchRole('user')" class="px-4 py-1 rounded-md text-sm font-medium transition-all nav-active">User</button>
+                <button id="adminBtn" onclick="requestAdminAccess()" class="px-4 py-1 rounded-md text-sm font-medium transition-all text-gray-500">Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-6">
+        <div class="mb-6">
+            <h2 id="welcomeText" class="text-2xl font-semibold text-gray-800">Hello, User</h2>
+            <p class="text-gray-500 text-sm">Select a service to continue</p>
+        </div>
+
+        <div id="servicesGrid" class="grid grid-cols-2 gap-4">
+            
+            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-bus text-blue-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 text-center">Transport Dept</span>
+            </a>
+
+            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-ticket-alt text-green-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 text-center">Temp Pass</span>
+            </a>
+
+            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-file-download text-purple-600 text-xl"></i>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 text-center">Download Pass</span>
+            </a>
+
+            <a id="driverMgmtLink" href="#" class="hidden glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm border-2 border-blue-200 bg-blue-50">
+                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-id-card text-white text-xl"></i>
+                </div>
+                <span class="text-sm font-semibold text-blue-800 text-center">Driver Management</span>
+            </a>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        // --- PASTE YOUR FIREBASE CONFIG HERE ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Global functions for the UI
+        window.requestAdminAccess = async () => {
+            const { value: formValues } = await Swal.fire({
+                title: 'Admin Login',
+                html:
+                    '<input id="swal-input1" class="swal2-input" placeholder="Email">' +
+                    '<input id="swal-input2" type="password" class="swal2-input" placeholder="Password">',
+                focusConfirm: false,
+                confirmButtonText: 'Login',
+                confirmButtonColor: '#2563eb',
+                showCancelButton: true,
+                preConfirm: () => {
+                    return [
+                        document.getElementById('swal-input1').value,
+                        document.getElementById('swal-input2').value
+                    ]
+                }
+            });
+
+            if (formValues) {
+                const [email, password] = formValues;
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    switchRole('admin');
+                    Swal.fire('Success', 'Admin Access Granted', 'success');
+                } catch (error) {
+                    Swal.fire('Error', 'Invalid Credentials', 'error');
+                }
+            }
+        };
+
+        window.switchRole = (role) => {
+            const userBtn = document.getElementById('userBtn');
+            const adminBtn = document.getElementById('adminBtn');
+            const driverLink = document.getElementById('driverMgmtLink');
+            const welcomeText = document.getElementById('welcomeText');
+
+            if (role === 'admin') {
+                adminBtn.classList.add('nav-active', 'bg-white', 'shadow-sm');
+                userBtn.classList.remove('nav-active', 'bg-white', 'shadow-sm');
+                driverLink.classList.remove('hidden');
+                welcomeText.innerText = "Admin Dashboard";
+            } else {
+                userBtn.classList.add('nav-active', 'bg-white', 'shadow-sm');
+                adminBtn.classList.remove('nav-active', 'bg-white', 'shadow-sm');
+                driverLink.classList.add('hidden');
+                welcomeText.innerText = "Hello, User";
+            }
+        };
+    </script>
+</body>
+</html>

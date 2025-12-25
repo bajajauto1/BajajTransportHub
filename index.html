@@ -3,88 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transport Hub</title>
+    <title>Transport Hub | Bajaj Auto</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
         body {
-            background: #f0f2f5;
+            background-color: #000000;
             font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
         }
-        .nav-active {
-            border-bottom: 3px solid #2563eb;
-            color: #2563eb;
+        .plant-btn {
+            background: #111827;
+            border: 1px solid #1e293b;
+            transition: all 0.3s ease;
+        }
+        .active-plant {
+            background: #2563eb !important;
+            border-color: #60a5fa !important;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+        }
+        .card-link {
+            background: white;
+            border-radius: 18px;
+            transition: transform 0.2s ease;
+        }
+        .role-toggle { background: #111827; border: 1px solid #334155; }
+        .role-active { background: white !important; color: black !important; }
+        
+        /* Logo Styling */
+        .header-logo {
+            height: 35px;
+            width: auto;
+            object-fit: contain;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body class="pb-10">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-gray-800">Transport<span class="text-blue-600">Hub</span></h1>
-            <div class="flex bg-gray-100 p-1 rounded-lg">
-                <button id="userBtn" onclick="switchRole('user')" class="px-4 py-1 rounded-md text-sm font-medium transition-all nav-active">User</button>
-                <button id="adminBtn" onclick="requestAdminAccess()" class="px-4 py-1 rounded-md text-sm font-medium transition-all text-gray-500">Admin</button>
+    <header class="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-6 py-4 flex justify-between items-center">
+            
+            <div class="flex items-center">
+                <img src="download (1).png" alt="Company Logo" class="header-logo">
+                <h1 class="text-lg font-bold tracking-tight">Transport<span class="text-blue-500">Hub</span></h1>
+            </div>
+
+            <div class="flex role-toggle p-1 rounded-lg">
+                <button id="userBtn" onclick="switchRole('user')" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all role-active">USER</button>
+                <button id="adminBtn" onclick="requestAdminAccess()" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all text-slate-400">ADMIN</button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 mt-6">
+    <main class="max-w-md mx-auto px-6 mt-8">
+        
         <div class="mb-6">
-            <h2 id="welcomeText" class="text-2xl font-semibold text-gray-800">Hello, User</h2>
-            <p class="text-gray-500 text-sm">Select a service to continue</p>
+            <h2 id="welcomeText" class="text-2xl font-bold text-white">Transport Department</h2>
+            <p class="text-slate-500 text-sm">Everything You Need...</p>
         </div>
 
-        <div id="servicesGrid" class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3 mb-8">
+            <button id="p1Btn" onclick="togglePlant(1)" class="plant-btn active-plant py-4 rounded-2xl flex flex-col items-center">
+                <span class="text-[10px] font-bold opacity-60 tracking-widest uppercase">Location</span>
+                <span class="text-sm font-bold text-white">PLANT 1</span>
+            </button>
+            <button id="p2Btn" onclick="togglePlant(2)" class="plant-btn py-4 rounded-2xl flex flex-col items-center">
+                <span class="text-[10px] font-bold opacity-60 tracking-widest uppercase">Location</span>
+                <span class="text-sm font-bold text-slate-400" id="p2Label">PLANT 2</span>
+            </button>
+        </div>
+
+        <div id="linksContainer" class="space-y-4">
+            </div>
+
+        <div id="adminSection" class="hidden mt-10 pt-6 border-t border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-bold text-blue-500 uppercase tracking-widest">Admin Control</h3>
+                <span id="adminPlantBadge" class="text-[10px] bg-blue-900/40 text-blue-300 px-2 py-1 rounded border border-blue-800 uppercase">Plant 1</span>
+            </div>
             
-            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
-                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                    <i class="fas fa-bus text-blue-600 text-xl"></i>
+            <a id="driverMgmtLink" href="https://bajajauto1.github.io/Driver/" target="_blank" class="flex items-center p-5 rounded-2xl bg-blue-600 shadow-lg shadow-blue-900/20">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                    <i class="fas fa-id-card-alt text-white text-xl"></i>
                 </div>
-                <span class="text-sm font-semibold text-gray-700 text-center">Transport Dept</span>
-            </a>
-
-            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
-                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
-                    <i class="fas fa-ticket-alt text-green-600 text-xl"></i>
+                <div>
+                    <h4 class="text-white font-bold">Driver Management</h4>
+                    <p class="text-blue-100 text-xs tracking-tight">Access system for <span class="admin-plant-name">Plant 1</span></p>
                 </div>
-                <span class="text-sm font-semibold text-gray-700 text-center">Temp Pass</span>
+                <i class="fas fa-external-link-alt ml-auto text-white/50"></i>
             </a>
-
-            <a href="#" class="glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow">
-                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                    <i class="fas fa-file-download text-purple-600 text-xl"></i>
-                </div>
-                <span class="text-sm font-semibold text-gray-700 text-center">Download Pass</span>
-            </a>
-
-            <a id="driverMgmtLink" href="#" class="hidden glass-card p-6 rounded-2xl flex flex-col items-center justify-center shadow-sm border-2 border-blue-200 bg-blue-50">
-                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-3">
-                    <i class="fas fa-id-card text-white text-xl"></i>
-                </div>
-                <span class="text-sm font-semibold text-blue-800 text-center">Driver Management</span>
-            </a>
-
+            
+            <button onclick="handleLogout()" class="w-full mt-6 py-4 text-red-400 font-bold rounded-2xl border border-red-500/10 bg-red-500/5">
+                <i class="fas fa-power-off mr-2"></i> Sign Out Admin
+            </button>
         </div>
+
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        // --- PASTE YOUR FIREBASE CONFIG HERE ---
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
             projectId: "YOUR_PROJECT_ID",
             storageBucket: "YOUR_PROJECT.appspot.com",
             messagingSenderId: "YOUR_ID",
@@ -92,58 +120,78 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
         const auth = getAuth(app);
 
-        // Global functions for the UI
+        const data = {
+            p1: {
+                links: [
+                    { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temppass/" },
+                    { title: "Bus Pass Download", icon: "ticket-alt", url: "https://bajajauto1.github.io/buspassonline/" },
+                    { title: "Transport Dept Portal", icon: "network-wired", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-1/" }
+                ],
+                admin: "https://bajajauto1.github.io/Driver/"
+            },
+            p2: {
+                links: [
+                    { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temporarypassplant-2/" },
+                    { title: "Bus Pass Download", icon: "ticket-alt", url: "https://bajajauto1.github.io/BajajAutoOnlinePass/" },
+                    { title: "Transport Dept Portal", icon: "network-wired", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-2/" }
+                ],
+                admin: "https://bajajauto1.github.io/driverP-2/"
+            }
+        };
+
+        window.togglePlant = (num) => {
+            document.getElementById('p1Btn').classList.toggle('active-plant', num === 1);
+            document.getElementById('p2Btn').classList.toggle('active-plant', num === 2);
+            document.getElementById('p2Label').classList.toggle('text-white', num === 2);
+            document.getElementById('p2Label').classList.toggle('text-slate-400', num !== 2);
+            
+            document.getElementById('adminPlantBadge').innerText = `PLANT ${num}`;
+            document.querySelectorAll('.admin-plant-name').forEach(el => el.innerText = `Plant ${num}`);
+            document.getElementById('driverMgmtLink').href = data[`p${num}`].admin;
+
+            renderLinks(num);
+        };
+
+        function renderLinks(num) {
+            const container = document.getElementById('linksContainer');
+            container.innerHTML = data[`p${num}`].links.map(item => `
+                <a href="${item.url}" target="_blank" class="card-link flex items-center p-5">
+                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mr-4">
+                        <i class="fas fa-${item.icon} text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-black font-bold text-sm">${item.title}</h3>
+                        <p class="text-slate-400 text-[9px] font-bold uppercase tracking-widest">Plant 0${num}</p>
+                    </div>
+                    <i class="fas fa-chevron-right ml-auto text-slate-200"></i>
+                </a>
+            `).join('');
+        }
+
+        renderLinks(1);
+
+        onAuthStateChanged(auth, (user) => {
+            const isAdmin = !!user;
+            document.getElementById('adminSection').classList.toggle('hidden', !isAdmin);
+            document.getElementById('userBtn').classList.toggle('role-active', !isAdmin);
+            document.getElementById('adminBtn').classList.toggle('role-active', isAdmin);
+            document.getElementById('welcomeText').innerText = isAdmin ? "Admin Dashboard" : "Services Portal";
+        });
+
         window.requestAdminAccess = async () => {
-            const { value: formValues } = await Swal.fire({
-                title: 'Admin Login',
-                html:
-                    '<input id="swal-input1" class="swal2-input" placeholder="Email">' +
-                    '<input id="swal-input2" type="password" class="swal2-input" placeholder="Password">',
-                focusConfirm: false,
-                confirmButtonText: 'Login',
-                confirmButtonColor: '#2563eb',
-                showCancelButton: true,
-                preConfirm: () => {
-                    return [
-                        document.getElementById('swal-input1').value,
-                        document.getElementById('swal-input2').value
-                    ]
-                }
+            const { value: login } = await Swal.fire({
+                title: 'Admin Access',
+                background: '#111827', color: '#fff',
+                html: '<input id="s-email" class="swal2-input" placeholder="Email"><input id="s-pass" type="password" class="swal2-input" placeholder="Password">',
+                preConfirm: () => [document.getElementById('s-email').value, document.getElementById('s-pass').value]
             });
-
-            if (formValues) {
-                const [email, password] = formValues;
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    switchRole('admin');
-                    Swal.fire('Success', 'Admin Access Granted', 'success');
-                } catch (error) {
-                    Swal.fire('Error', 'Invalid Credentials', 'error');
-                }
-            }
+            if (login) signInWithEmailAndPassword(auth, login[0], login[1]).catch(() => Swal.fire('Error', 'Invalid Login', 'error'));
         };
 
-        window.switchRole = (role) => {
-            const userBtn = document.getElementById('userBtn');
-            const adminBtn = document.getElementById('adminBtn');
-            const driverLink = document.getElementById('driverMgmtLink');
-            const welcomeText = document.getElementById('welcomeText');
-
-            if (role === 'admin') {
-                adminBtn.classList.add('nav-active', 'bg-white', 'shadow-sm');
-                userBtn.classList.remove('nav-active', 'bg-white', 'shadow-sm');
-                driverLink.classList.remove('hidden');
-                welcomeText.innerText = "Admin Dashboard";
-            } else {
-                userBtn.classList.add('nav-active', 'bg-white', 'shadow-sm');
-                adminBtn.classList.remove('nav-active', 'bg-white', 'shadow-sm');
-                driverLink.classList.add('hidden');
-                welcomeText.innerText = "Hello, User";
-            }
-        };
+        window.handleLogout = () => signOut(auth);
+        window.switchRole = (role) => { if(role === 'user' && auth.currentUser) handleLogout(); };
     </script>
 </body>
 </html>

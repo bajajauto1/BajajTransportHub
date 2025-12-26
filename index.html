@@ -2,198 +2,218 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transport Hub | Bajaj Auto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Transport Hub | Mobile Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        :root { --primary-blue: #2563eb; --dark-bg: #020617; }
         body {
-            background-color: #000000;
+            background-color: var(--dark-bg);
             font-family: 'Inter', sans-serif;
             color: white;
-            min-height: 100vh;
+            min-height: 100vh; margin: 0; overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
+            z-index: -2;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 36px; padding: 40px 24px;
+            display: flex; flex-direction: column; align-items: center;
+            text-decoration: none; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .card:active { transform: scale(0.94); background: rgba(30, 41, 59, 0.8); border-color: var(--primary-blue); }
+
+        .icon-container {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.05));
+            width: 80px; height: 80px; border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; border: 1px solid rgba(37, 99, 235, 0.4);
+        }
+        .icon { width: 40px; height: 40px; filter: brightness(0) invert(1); }
+
+        .app-header {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+        }
+        .header-logo { height: 32px; width: auto; object-fit: contain; }
+
+        .plant-nav {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px; padding: 4px; display: flex; gap: 4px;
         }
         .plant-btn {
-            background: #111827;
-            border: 1px solid #1e293b;
-            transition: all 0.3s ease;
+            flex: 1; padding: 16px 0; border-radius: 20px;
+            font-size: 11px; font-weight: 800; letter-spacing: 2px;
+            color: #64748b; transition: 0.4s;
         }
-        .active-plant {
-            background: #2563eb !important;
-            border-color: #60a5fa !important;
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+        .active-plant { 
+            background: var(--primary-blue) !important; color: white !important;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
         }
-        .card-link {
-            background: white;
-            border-radius: 18px;
-            transition: transform 0.2s ease;
-        }
-        .role-toggle { background: #111827; border: 1px solid #334155; }
+
         .role-active { background: white !important; color: black !important; }
-        
-        /* Logo Styling */
-        .header-logo {
-            height: 35px;
-            width: auto;
-            object-fit: contain;
-            margin-right: 10px;
-        }
     </style>
 </head>
-<body class="pb-10">
+<body>
 
-    <header class="border-b border-white/10 bg-black/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-md mx-auto px-6 py-4 flex justify-between items-center">
-            
-            <div class="flex items-center">
-                <img src="download (1).png" alt="Company Logo" class="header-logo">
-                <h1 class="text-lg font-bold tracking-tight">Transport<span class="text-blue-500">Hub</span></h1>
-            </div>
+    <div class="bg-glow"></div>
+    <canvas id="particleCanvas" style="position:fixed; top:0; left:0; z-index:-1; pointer-events:none;"></canvas>
 
-            <div class="flex role-toggle p-1 rounded-lg">
-                <button id="userBtn" onclick="switchRole('user')" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all role-active">USER</button>
-                <button id="adminBtn" onclick="requestAdminAccess()" class="px-3 py-1 rounded-md text-[10px] font-bold transition-all text-slate-400">ADMIN</button>
+    <header class="app-header">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <img src="download (1).png" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/150x50/020617/FFFFFF?text=BAJAJ'">
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-white/10">
+                <button id="userBtn" onclick="switchRole('user')" class="px-4 py-1.5 rounded-lg text-[10px] font-black role-active">USER</button>
+                <button id="adminBtn" onclick="requestAdminAccess()" class="px-4 py-1.5 rounded-lg text-[10px] font-black text-slate-500">ADMIN</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto px-6 mt-8">
         
-        <div class="mb-6">
-            <h2 id="welcomeText" class="text-2xl font-bold text-white">Transport Department</h2>
-            <p class="text-slate-500 text-sm">Everything You Need...</p>
+        <div class="text-center mb-8">
+            <h2 id="welcomeText" class="text-3xl font-extrabold tracking-tighter uppercase italic">Transport Hub</h2>
+            <p class="text-blue-500/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Everything you Need....</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 mb-8">
-            <button id="p1Btn" onclick="togglePlant(1)" class="plant-btn active-plant py-4 rounded-2xl flex flex-col items-center">
-                <span class="text-[10px] font-bold opacity-60 tracking-widest uppercase">Location</span>
-                <span class="text-sm font-bold text-white">PLANT 1</span>
-            </button>
-            <button id="p2Btn" onclick="togglePlant(2)" class="plant-btn py-4 rounded-2xl flex flex-col items-center">
-                <span class="text-[10px] font-bold opacity-60 tracking-widest uppercase">Location</span>
-                <span class="text-sm font-bold text-slate-400" id="p2Label">PLANT 2</span>
-            </button>
+        <div class="plant-nav mb-8">
+            <button id="p1Btn" onclick="togglePlant(1)" class="plant-btn active-plant">PLANT 1</button>
+            <button id="p2Btn" onclick="togglePlant(2)" class="plant-btn">PLANT 2</button>
         </div>
 
-        <div id="linksContainer" class="space-y-4">
-            </div>
+        <div id="linksContainer" class="flex flex-col gap-6"></div>
 
-        <div id="adminSection" class="hidden mt-10 pt-6 border-t border-white/10">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xs font-bold text-blue-500 uppercase tracking-widest">Admin Control</h3>
-                <span id="adminPlantBadge" class="text-[10px] bg-blue-900/40 text-blue-300 px-2 py-1 rounded border border-blue-800 uppercase">Plant 1</span>
+        <div id="adminSection" class="hidden mt-10 pb-20">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="h-px flex-1 bg-blue-500/30"></div>
+                <span class="text-[10px] font-black text-blue-500 tracking-[0.3em]">ADMIN TOOLS</span>
+                <div class="h-px flex-1 bg-blue-500/30"></div>
             </div>
             
-            <a id="driverMgmtLink" href="https://bajajauto1.github.io/Driver/" target="_blank" class="flex items-center p-5 rounded-2xl bg-blue-600 shadow-lg shadow-blue-900/20">
-                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mr-4">
-                    <i class="fas fa-id-card-alt text-white text-xl"></i>
+            <a id="driverMgmtLink" href="#" target="_blank" class="card border-blue-500/40 bg-blue-600/10 mb-6">
+                <div class="icon-container border-blue-400 bg-blue-500/20">
+                    <i class="fas fa-id-card-clip text-white text-3xl"></i>
                 </div>
-                <div>
-                    <h4 class="text-white font-bold">Driver Management</h4>
-                    <p class="text-blue-100 text-xs tracking-tight">Access system for <span class="admin-plant-name">Plant 1</span></p>
-                </div>
-                <i class="fas fa-external-link-alt ml-auto text-white/50"></i>
+                <div class="text-white text-xl font-black italic tracking-tight uppercase">Driver Management</div>
+                <div class="text-[10px] text-blue-400 mt-2 font-bold uppercase tracking-widest">System Registry Access</div>
             </a>
-            
-            <button onclick="handleLogout()" class="w-full mt-6 py-4 text-red-400 font-bold rounded-2xl border border-red-500/10 bg-red-500/5">
-                <i class="fas fa-power-off mr-2"></i> Sign Out Admin
+
+            <button onclick="handleLogout()" class="w-full py-5 text-red-500 font-bold rounded-[30px] border border-red-500/20 bg-red-500/5 active:scale-95 transition-all">
+                TERMINATE ADMIN SESSION
             </button>
         </div>
-
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        // Firebase Config
-        const firebaseConfig = {
-               apiKey: "AIzaSyA6Or9VkttoebVCx9S65AkHQYjL8bLU0bI",
-  authDomain: "bajajhub-62f87.firebaseapp.com",
-  databaseURL: "https://bajajhub-62f87-default-rtdb.firebaseio.com",
-  projectId: "bajajhub-62f87",
-  storageBucket: "bajajhub-62f87.firebasestorage.app",
-  messagingSenderId: "725024390718",
-  appId: "1:725024390718:web:2642189d2949ce61325b6f",
-  measurementId: "G-W92ZTQLCS6"
-        };
+        // Simple Particles
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            particles = Array.from({length: 20}, () => ({
+                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+                size: 1.5, sx: Math.random()*0.2-0.1, sy: Math.random()*0.2-0.1
+            }));
+        }
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = 'rgba(37,99,235,0.2)';
+            particles.forEach(p => {
+                p.x += p.sx; p.y += p.sy;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        init(); draw(); window.onresize = init;
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6Or9VkttoebVCx9S65AkHQYjL8bLU0bI",
+            authDomain: "bajajhub-62f87.firebaseapp.com",
+            projectId: "bajajhub-62f87",
+            storageBucket: "bajajhub-62f87.firebasestorage.app",
+            messagingSenderId: "725024390718",
+            appId: "1:725024390718:web:2642189d2949ce61325b6f"
+        };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // DATA ORDERED AS REQUESTED
         const data = {
-            p1: {
-                links: [
-                    { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temppass/" },
-                    { title: "Bus Pass Download", icon: "ticket-alt", url: "https://bajajauto1.github.io/buspassonline/" },
-                    { title: "Transport Dept Portal", icon: "network-wired", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-1/" }
-                ],
-                admin: "https://bajajauto1.github.io/Driver/"
-            },
-            p2: {
-                links: [
-                    { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temporarypassplant-2/" },
-                    { title: "Bus Pass Download", icon: "ticket-alt", url: "https://bajajauto1.github.io/BajajAutoOnlinePass/" },
-                    { title: "Transport Dept Portal", icon: "network-wired", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-2/" }
-                ],
-                admin: "https://bajajauto1.github.io/driverP-2/"
-            }
+            p1: { links: [
+                { title: "Transport Portal", icon: "internet", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-1/" },
+                { title: "Bus Pass System", icon: "ticket", url: "https://bajajauto1.github.io/buspassonline/" },
+                { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temppass/" }
+            ], admin: "https://bajajauto1.github.io/Driver/" },
+            p2: { links: [
+                { title: "Transport Portal", icon: "internet", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-2/" },
+                { title: "Bus Pass System", icon: "ticket", url: "https://bajajauto1.github.io/BajajAutoOnlinePass/" },
+                { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temporarypassplant-2/" }
+            ], admin: "https://bajajauto1.github.io/driverP-2/" }
         };
 
+        let currentPlant = 1;
+
         window.togglePlant = (num) => {
+            currentPlant = num;
             document.getElementById('p1Btn').classList.toggle('active-plant', num === 1);
             document.getElementById('p2Btn').classList.toggle('active-plant', num === 2);
-            document.getElementById('p2Label').classList.toggle('text-white', num === 2);
-            document.getElementById('p2Label').classList.toggle('text-slate-400', num !== 2);
-            
-            document.getElementById('adminPlantBadge').innerText = `PLANT ${num}`;
-            document.querySelectorAll('.admin-plant-name').forEach(el => el.innerText = `Plant ${num}`);
             document.getElementById('driverMgmtLink').href = data[`p${num}`].admin;
-
             renderLinks(num);
         };
 
         function renderLinks(num) {
             const container = document.getElementById('linksContainer');
             container.innerHTML = data[`p${num}`].links.map(item => `
-                <a href="${item.url}" target="_blank" class="card-link flex items-center p-5">
-                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mr-4">
-                        <i class="fas fa-${item.icon} text-blue-600 text-xl"></i>
+                <a href="${item.url}" target="_blank" class="card">
+                    <div class="icon-container">
+                        <img src="https://img.icons8.com/ios-filled/100/ffffff/${item.icon}.png" class="icon">
                     </div>
-                    <div>
-                        <h3 class="text-black font-bold text-sm">${item.title}</h3>
-                        <p class="text-slate-400 text-[9px] font-bold uppercase tracking-widest">Plant 0${num}</p>
-                    </div>
-                    <i class="fas fa-chevron-right ml-auto text-slate-200"></i>
+                    <div class="text-xl font-black italic tracking-tight uppercase">${item.title}</div>
+                    <div class="text-[9px] text-blue-500 font-bold tracking-[0.3em] mt-3 uppercase">P-0${num} Node</div>
                 </a>
             `).join('');
         }
-
-        renderLinks(1);
 
         onAuthStateChanged(auth, (user) => {
             const isAdmin = !!user;
             document.getElementById('adminSection').classList.toggle('hidden', !isAdmin);
             document.getElementById('userBtn').classList.toggle('role-active', !isAdmin);
             document.getElementById('adminBtn').classList.toggle('role-active', isAdmin);
-            document.getElementById('welcomeText').innerText = isAdmin ? "Admin Dashboard" : "Services Portal";
+            togglePlant(currentPlant);
         });
 
         window.requestAdminAccess = async () => {
             const { value: login } = await Swal.fire({
-                title: 'Admin Access',
-                background: '#111827', color: '#fff',
-                html: '<input id="s-email" class="swal2-input" placeholder="Email"><input id="s-pass" type="password" class="swal2-input" placeholder="Password">',
+                title: 'AUTHENTICATE', background: '#020617', color: '#fff',
+                html: '<input id="s-email" class="swal2-input" style="background:#0f172a; border:1px solid #1e293b; color:white" placeholder="Admin ID"><input id="s-pass" type="password" class="swal2-input" style="background:#0f172a; border:1px solid #1e293b; color:white" placeholder="Secret Key">',
+                confirmButtonColor: '#2563eb',
                 preConfirm: () => [document.getElementById('s-email').value, document.getElementById('s-pass').value]
             });
-            if (login) signInWithEmailAndPassword(auth, login[0], login[1]).catch(() => Swal.fire('Error', 'Invalid Login', 'error'));
+            if (login) signInWithEmailAndPassword(auth, login[0], login[1]).catch(() => Swal.fire('DENIED', 'Invalid Credentials', 'error'));
         };
 
         window.handleLogout = () => signOut(auth);
         window.switchRole = (role) => { if(role === 'user' && auth.currentUser) handleLogout(); };
+
+        renderLinks(1);
     </script>
 </body>
 </html>

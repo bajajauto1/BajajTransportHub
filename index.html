@@ -3,118 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Transport Hub | Mobile Pro</title>
+    <title>Transport Hub | Pro</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary-blue: #2563eb; --dark-bg: #020617; }
+        :root { --primary-blue: #2563eb; --glow-color: rgba(37, 99, 235, 0.6); --dark-bg: #020617; }
+        
+        * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
         body {
             background-color: var(--dark-bg);
             font-family: 'Inter', sans-serif;
             color: white;
-            min-height: 100vh; margin: 0; overflow-x: hidden;
+            min-height: 100vh; margin: 0;
+            background: radial-gradient(circle at 50% 0%, #0f172a 0%, #020617 100%);
         }
 
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
-            z-index: -2;
+        /* HEADER LOGO */
+        .logo-box {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
         }
+        .logo-img { width: 100%; height: 100%; object-fit: contain; }
 
+        /* CARDS */
         .card {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 36px; padding: 40px 24px;
+            border-radius: 32px;
             display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            text-decoration: none; 
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            padding: 45px 20px; width: 100%;
         }
-        .card:active { transform: scale(0.94); background: rgba(30, 41, 59, 0.8); border-color: var(--primary-blue); }
+
+        .card:active { 
+            transform: scale(0.97); 
+            background: rgba(37, 99, 235, 0.15); 
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 30px 5px var(--glow-color);
+            filter: brightness(1.2);
+        }
 
         .icon-container {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.05));
-            width: 80px; height: 80px; border-radius: 24px;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            width: 110px; height: 110px; border-radius: 32px;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px; border: 1px solid rgba(37, 99, 235, 0.4);
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
         }
-        .icon { width: 40px; height: 40px; filter: brightness(0) invert(1); }
+
+        .icon-img { width: 60px; height: 60px; filter: brightness(0) invert(1); }
+
+        /* POPUP MODAL (CLEAN VERSION) */
+        .swal-mini-popup {
+            width: 85% !important;
+            max-width: 320px !important;
+            border-radius: 30px !important;
+            background: #0f172a !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            padding-bottom: 2rem !important;
+        }
+
+        .swal-mini-input {
+            height: 50px !important;
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 14px !important;
+            color: white !important;
+            font-size: 16px !important;
+            margin: 0.6rem 0 !important;
+        }
+
+        .swal-mini-confirm {
+            width: 100% !important;
+            border-radius: 14px !important;
+            padding: 14px !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            margin-top: 1rem !important;
+        }
 
         .app-header {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding: 12px 20px;
         }
-        .header-logo { height: 32px; width: auto; object-fit: contain; }
 
-        .plant-nav {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px; padding: 4px; display: flex; gap: 4px;
-        }
         .plant-btn {
             flex: 1; padding: 16px 0; border-radius: 20px;
-            font-size: 11px; font-weight: 800; letter-spacing: 2px;
-            color: #64748b; transition: 0.4s;
+            font-size: 11px; font-weight: 900; letter-spacing: 2px;
+            color: #64748b; transition: 0.3s;
         }
-        .active-plant { 
-            background: var(--primary-blue) !important; color: white !important;
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-        }
+        .active-plant { background: var(--primary-blue) !important; color: white !important; }
 
-        .role-active { background: white !important; color: black !important; }
+        .role-pill { background: white; color: black; font-weight: 900; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-    <canvas id="particleCanvas" style="position:fixed; top:0; left:0; z-index:-1; pointer-events:none;"></canvas>
-
     <header class="app-header">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <img src="download (1).png" alt="Logo" class="header-logo" onerror="this.src='https://via.placeholder.com/150x50/020617/FFFFFF?text=BAJAJ'">
-            <div class="flex bg-slate-950 p-1 rounded-xl border border-white/10">
-                <button id="userBtn" onclick="switchRole('user')" class="px-4 py-1.5 rounded-lg text-[10px] font-black role-active">USER</button>
-                <button id="adminBtn" onclick="requestAdminAccess()" class="px-4 py-1.5 rounded-lg text-[10px] font-black text-slate-500">ADMIN</button>
+            <div class="flex items-center gap-3">
+                <div class="logo-box">
+                    <img src="download (1).png" alt="Logo" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/713/713311.png'">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-black italic tracking-tighter leading-none">BAJAJ</span>
+                    <span class="text-[9px] font-bold text-blue-500 tracking-[0.2em] uppercase">Transport</span>
+                </div>
+            </div>
+
+            <div class="flex bg-slate-900 p-1 rounded-xl border border-white/10">
+                <button id="userBtn" onclick="switchRole('user')" class="px-4 py-2 rounded-xl text-[10px] role-pill transition-all">USER</button>
+                <button id="adminBtn" onclick="requestAdminAccess()" class="px-4 py-2 rounded-xl text-[10px] text-slate-500 transition-all font-black">ADMIN</button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto px-6 mt-8">
+    <main class="max-w-md mx-auto px-6 mt-8 pb-10">
         
-        <div class="text-center mb-8">
-            <h2 id="welcomeText" class="text-3xl font-extrabold tracking-tighter uppercase italic">Transport Hub</h2>
-            <p class="text-blue-500/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Everything you Need....</p>
-        </div>
-
-        <div class="plant-nav mb-8">
+        <div class="flex bg-slate-900/80 p-1.5 rounded-[24px] mb-8 border border-white/5">
             <button id="p1Btn" onclick="togglePlant(1)" class="plant-btn active-plant">PLANT 1</button>
             <button id="p2Btn" onclick="togglePlant(2)" class="plant-btn">PLANT 2</button>
         </div>
 
         <div id="linksContainer" class="flex flex-col gap-6"></div>
 
-        <div id="adminSection" class="hidden mt-10 pb-20">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="h-px flex-1 bg-blue-500/30"></div>
-                <span class="text-[10px] font-black text-blue-500 tracking-[0.3em]">ADMIN TOOLS</span>
-                <div class="h-px flex-1 bg-blue-500/30"></div>
+        <div id="adminSection" class="hidden mt-12 space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="h-[1px] flex-1 bg-blue-500/20"></div>
+                <span class="text-[10px] font-black text-blue-400 tracking-[0.4em]">ADMIN TOOLS</span>
+                <div class="h-[1px] flex-1 bg-blue-500/20"></div>
             </div>
             
-            <a id="driverMgmtLink" href="#" target="_blank" class="card border-blue-500/40 bg-blue-600/10 mb-6">
-                <div class="icon-container border-blue-400 bg-blue-500/20">
-                    <i class="fas fa-id-card-clip text-white text-3xl"></i>
+            <a id="driverMgmtLink" href="#" target="_blank" class="card" style="background: rgba(37, 99, 235, 0.1); border-color: rgba(37, 99, 235, 0.3);">
+                <div class="icon-container">
+                    <i class="fas fa-fingerprint text-white text-4xl"></i>
                 </div>
-                <div class="text-white text-xl font-black italic tracking-tight uppercase">Driver Management</div>
-                <div class="text-[10px] text-blue-400 mt-2 font-bold uppercase tracking-widest">System Registry Access</div>
+                <div class="text-2xl font-black italic tracking-tight uppercase text-center">Driver Portal</div>
             </a>
 
-            <button onclick="handleLogout()" class="w-full py-5 text-red-500 font-bold rounded-[30px] border border-red-500/20 bg-red-500/5 active:scale-95 transition-all">
-                TERMINATE ADMIN SESSION
+            <button onclick="handleLogout()" class="w-full py-5 text-red-500 font-black text-[11px] tracking-[0.2em] rounded-[30px] border border-red-500/10 bg-red-500/5 active:bg-red-500/10 transition-all uppercase">
+                Logout Admin
             </button>
         </div>
     </main>
@@ -123,97 +165,76 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-        // Simple Particles
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function init() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            particles = Array.from({length: 20}, () => ({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                size: 1.5, sx: Math.random()*0.2-0.1, sy: Math.random()*0.2-0.1
-            }));
-        }
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = 'rgba(37,99,235,0.2)';
-            particles.forEach(p => {
-                p.x += p.sx; p.y += p.sy;
-                ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(draw);
-        }
-        init(); draw(); window.onresize = init;
-
         const firebaseConfig = {
             apiKey: "AIzaSyA6Or9VkttoebVCx9S65AkHQYjL8bLU0bI",
             authDomain: "bajajhub-62f87.firebaseapp.com",
             projectId: "bajajhub-62f87",
-            storageBucket: "bajajhub-62f87.firebasestorage.app",
-            messagingSenderId: "725024390718",
             appId: "1:725024390718:web:2642189d2949ce61325b6f"
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // DATA ORDERED AS REQUESTED
         const data = {
             p1: { links: [
                 { title: "Transport Portal", icon: "internet", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-1/" },
-                { title: "Bus Pass System", icon: "ticket", url: "https://bajajauto1.github.io/buspassonline/" },
-                { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temppass/" }
+                { title: "Online Bus Pass", icon: "ticket", url: "https://bajajauto1.github.io/buspassonline/" },
+                { title: "Temporary Pass", icon: "bus", url: "https://bajajauto1.github.io/temppass/" }
             ], admin: "https://bajajauto1.github.io/Driver/" },
             p2: { links: [
                 { title: "Transport Portal", icon: "internet", url: "https://bajajauto1.github.io/TransportDepartmentPLANT-2/" },
-                { title: "Bus Pass System", icon: "ticket", url: "https://bajajauto1.github.io/BajajAutoOnlinePass/" },
-                { title: "Temporary Bus Pass", icon: "bus", url: "https://bajajauto1.github.io/temporarypassplant-2/" }
+                { title: "Online Bus Pass", icon: "ticket", url: "https://bajajauto1.github.io/BajajAutoOnlinePass/" },
+                { title: "Temporary Pass", icon: "bus", url: "https://bajajauto1.github.io/temporarypassplant-2/" }
             ], admin: "https://bajajauto1.github.io/driverP-2/" }
         };
 
-        let currentPlant = 1;
-
         window.togglePlant = (num) => {
-            currentPlant = num;
             document.getElementById('p1Btn').classList.toggle('active-plant', num === 1);
             document.getElementById('p2Btn').classList.toggle('active-plant', num === 2);
             document.getElementById('driverMgmtLink').href = data[`p${num}`].admin;
-            renderLinks(num);
-        };
-
-        function renderLinks(num) {
             const container = document.getElementById('linksContainer');
             container.innerHTML = data[`p${num}`].links.map(item => `
                 <a href="${item.url}" target="_blank" class="card">
                     <div class="icon-container">
-                        <img src="https://img.icons8.com/ios-filled/100/ffffff/${item.icon}.png" class="icon">
+                        <img src="https://img.icons8.com/ios-filled/150/ffffff/${item.icon}.png" class="icon-img">
                     </div>
-                    <div class="text-xl font-black italic tracking-tight uppercase">${item.title}</div>
-                    <div class="text-[9px] text-blue-500 font-bold tracking-[0.3em] mt-3 uppercase">P-0${num} Node</div>
+                    <div class="text-2xl font-black italic tracking-tighter uppercase text-center">${item.title}</div>
+                    <div class="text-[10px] text-blue-500 font-bold tracking-[0.4em] mt-3 uppercase opacity-60">HUB NODE P-0${num}</div>
                 </a>
             `).join('');
-        }
+        };
 
         onAuthStateChanged(auth, (user) => {
             const isAdmin = !!user;
             document.getElementById('adminSection').classList.toggle('hidden', !isAdmin);
-            document.getElementById('userBtn').classList.toggle('role-active', !isAdmin);
-            document.getElementById('adminBtn').classList.toggle('role-active', isAdmin);
-            togglePlant(currentPlant);
+            document.getElementById('userBtn').classList.toggle('role-pill', !isAdmin);
+            document.getElementById('adminBtn').classList.toggle('role-pill', isAdmin);
+            document.getElementById('adminBtn').classList.toggle('text-slate-500', !isAdmin);
+            document.getElementById('userBtn').classList.toggle('text-slate-500', isAdmin);
+            togglePlant(1);
         });
 
         window.requestAdminAccess = async () => {
+            if (auth.currentUser) return;
             const { value: login } = await Swal.fire({
-                title: 'AUTHENTICATE', background: '#020617', color: '#fff',
-                html: '<input id="s-email" class="swal2-input" style="background:#0f172a; border:1px solid #1e293b; color:white" placeholder="Admin ID"><input id="s-pass" type="password" class="swal2-input" style="background:#0f172a; border:1px solid #1e293b; color:white" placeholder="Secret Key">',
+                title: '<span style="font-size:18px; font-weight:900; letter-spacing:1px; color:#fff;">ADMIN AUTH</span>',
+                background: '#0f172a',
+                color: '#fff',
+                customClass: { popup: 'swal-mini-popup', input: 'swal-mini-input', confirmButton: 'swal-mini-confirm' },
                 confirmButtonColor: '#2563eb',
-                preConfirm: () => [document.getElementById('s-email').value, document.getElementById('s-pass').value]
+                confirmButtonText: 'Sign In',
+                html: `<div class="flex flex-col mt-4">
+                        <input id="e" type="email" class="swal2-input swal-mini-input" placeholder="Admin ID">
+                        <input id="p" type="password" class="swal2-input swal-mini-input" placeholder="Access Key">
+                    </div>`,
+                preConfirm: () => [document.getElementById('e').value, document.getElementById('p').value]
             });
-            if (login) signInWithEmailAndPassword(auth, login[0], login[1]).catch(() => Swal.fire('DENIED', 'Invalid Credentials', 'error'));
+            if (login) signInWithEmailAndPassword(auth, login[0], login[1]).catch(() => Swal.fire({title:'Access Denied', icon:'error', customClass:{popup:'swal-mini-popup'}}));
         };
 
         window.handleLogout = () => signOut(auth);
         window.switchRole = (role) => { if(role === 'user' && auth.currentUser) handleLogout(); };
 
-        renderLinks(1);
+        togglePlant(1);
     </script>
 </body>
 </html>
